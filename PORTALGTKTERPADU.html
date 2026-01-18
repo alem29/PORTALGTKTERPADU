@@ -1,0 +1,1580 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal GTK Terpadu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    body { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    * { font-family: 'Poppins', sans-serif; }
+    .blink-new { animation: blink 1s ease-in-out infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .card-hover { transition: all 0.3s ease; }
+    .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .gradient-bg { background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%); }
+    .glass-effect { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); }
+    .menu-active { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; }
+    .fade-in { animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .pulse-dot { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #0ea5e9; border-radius: 4px; }
+    .marquee-container { overflow: hidden; white-space: nowrap; }
+    .marquee-text { display: inline-block; animation: marquee linear infinite; }
+    @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+    .modal-overlay { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+    .btn-primary { background: linear-gradient(135deg, #0ea5e9, #0284c7); transition: all 0.3s; }
+    .btn-primary:hover { background: linear-gradient(135deg, #0284c7, #0369a1); transform: scale(1.02); }
+    .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .btn-danger:hover { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+    .input-field { transition: all 0.3s; border: 2px solid #e2e8f0; }
+    .input-field:focus { border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14,165,233,0.1); }
+    .stat-card { background: linear-gradient(135deg, #f0f9ff, #e0f2fe); }
+    .info-card { border-left: 4px solid #0ea5e9; }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full bg-gray-50">
+  <div id="app" class="h-full flex flex-col overflow-auto"><!-- Marquee Banner -->
+   <div id="marquee-banner" class="gradient-bg text-white py-2 hidden">
+    <div class="marquee-container"><span id="marquee-content" class="marquee-text font-medium"></span>
+    </div>
+   </div><!-- Header -->
+   <header class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+     <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+       <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg">
+        <svg class="w-8 h-8 text-sky-500" fill="currentColor" viewbox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+        </svg>
+       </div>
+       <div>
+        <h1 id="site-title" class="text-xl md:text-2xl font-bold">Portal GTK Terpadu</h1>
+        <p class="text-sky-100 text-xs md:text-sm">Sumber Informasi Terpercaya untuk Pendidik</p>
+       </div>
+      </div>
+      <div class="flex items-center gap-2"><button id="fullscreen-btn" onclick="toggleFullscreen()" class="p-2 hover:bg-white/20 rounded-lg transition" title="Mode Layar Penuh">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+        </svg></button> <button onclick="openLoginModal()" class="flex items-center gap-2 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition font-medium">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg><span class="hidden sm:inline">Login Admin</span> </button>
+      </div>
+     </div>
+    </div>
+   </header><!-- Navigation Menu -->
+   <nav class="bg-white shadow-md sticky top-20 z-40">
+    <div class="max-w-7xl mx-auto px-4">
+     <div class="flex overflow-x-auto py-2 gap-1 scrollbar-hide"><button onclick="showMenu('beranda')" class="menu-btn px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-all menu-active" data-menu="beranda"> 🏠 Beranda </button> <button onclick="showMenu('informasi')" class="menu-btn px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-all hover:bg-sky-100" data-menu="informasi"> 📰 Informasi Terbaru </button> <button onclick="showMenu('dapodik')" class="menu-btn px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-all hover:bg-sky-100" data-menu="dapodik"> 📊 Dapodik </button> <button onclick="showMenu('tpg')" class="menu-btn px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-all hover:bg-sky-100" data-menu="tpg"> 💰 TPG </button> <button onclick="showMenu('juknis')" class="menu-btn px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-all hover:bg-sky-100" data-menu="juknis"> 📋 Juknis/Peraturan </button> <button onclick="showMenu('tka')" class="menu-btn px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-all hover:bg-sky-100" data-menu="tka"> 📝 TKA/ANBK </button> <button onclick="showMenu('eijazah')" class="menu-btn px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-all hover:bg-sky-100" data-menu="eijazah"> 🎓 E-Ijazah/E-Rapor </button> <button onclick="showMenu('konsultasi')" class="menu-btn px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-all hover:bg-sky-100" data-menu="konsultasi"> 💬 Konsultasi </button>
+     </div>
+    </div>
+   </nav><!-- Main Content -->
+   <main class="flex-1 bg-white">
+    <div class="max-w-7xl mx-auto px-4 py-6"><!-- Content Sections -->
+     <div id="content-beranda" class="content-section fade-in"><!-- Beranda Content -->
+      <div class="mb-8">
+       <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2"><span class="w-1 h-8 bg-sky-500 rounded"></span> Selamat Datang di Portal Informasi</h2>
+       <div class="bg-gradient-to-r from-sky-50 to-blue-50 rounded-2xl p-6 mb-6">
+        <p class="text-gray-700 leading-relaxed">Portal ini menyediakan informasi lengkap seputar <strong>TPG (Tunjangan Profesi Guru)</strong>, <strong>TKA/ANBK</strong>, <strong>Dapodik</strong>, <strong>Juknis/Peraturan</strong>, dan <strong>E-Ijazah/E-Rapor</strong>. Semua informasi diambil dari sumber resmi dan terpercaya untuk membantu para pendidik mendapatkan update terbaru.</p>
+       </div>
+      </div><!-- Why Follow Us -->
+      <div class="mb-8">
+       <h3 class="text-xl font-bold text-gray-800 mb-4">🌟 Mengapa Mengikuti Kami?</h3>
+       <div class="grid md:grid-cols-3 gap-3">
+        <div class="bg-white border-2 border-sky-100 rounded-xl p-4 card-hover">
+         <div class="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center mb-2"><span class="text-xl">✅</span>
+         </div>
+         <h4 class="font-semibold text-gray-800 mb-1 text-sm">Sumber Terpercaya</h4>
+         <p class="text-xs text-gray-600">Data diambil dari rujukan sumber terpercaya dan resmi.</p>
+        </div>
+        <div class="bg-white border-2 border-sky-100 rounded-xl p-4 card-hover">
+         <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mb-2"><span class="text-xl">🔄</span>
+         </div>
+         <h4 class="font-semibold text-gray-800 mb-1 text-sm">Update Berkala</h4>
+         <p class="text-xs text-gray-600">Update berkala seputar pencairan TPG dan Juknis terbaru.</p>
+        </div>
+        <div class="bg-white border-2 border-sky-100 rounded-xl p-4 card-hover">
+         <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mb-2"><span class="text-xl">📱</span>
+         </div>
+         <h4 class="font-semibold text-gray-800 mb-1 text-sm">Akses Mudah</h4>
+         <p class="text-xs text-gray-600">Akses kapan saja dan di mana saja melalui perangkat seluler/laptop/chromebook.</p>
+        </div>
+       </div>
+      </div><!-- Important Links -->
+      <div class="mb-8">
+       <h3 class="text-xl font-bold text-gray-800 mb-4">🔗 Link Penting</h3>
+       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3" id="important-links"><a href="https://dapo.kemendikdasmen.go.id" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 bg-white border border-gray-200 rounded-xl p-3 hover:border-sky-400 hover:shadow-md transition card-hover">
+         <div class="w-10 h-10 bg-sky-100 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+          </svg>
+         </div>
+         <div class="text-center">
+          <div class="font-semibold text-gray-800 text-xs">
+           Dapodik
+          </div>
+         </div></a> <a href="https://datadik.kemendikdasmen.go.id" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 bg-white border border-gray-200 rounded-xl p-3 hover:border-sky-400 hover:shadow-md transition card-hover">
+         <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+         </div>
+         <div class="text-center">
+          <div class="font-semibold text-gray-800 text-xs">
+           Manajemen Dinas
+          </div>
+         </div></a> <a href="https://sp.datadik.kemendikdasmen.go.id" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 bg-white border border-gray-200 rounded-xl p-3 hover:border-sky-400 hover:shadow-md transition card-hover">
+         <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+          </svg>
+         </div>
+         <div class="text-center">
+          <div class="font-semibold text-gray-800 text-xs">
+           Manajemen Sekolah
+          </div>
+         </div></a> <a href="https://ptk.datadik.kemendikdasmen.go.id" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 bg-white border border-gray-200 rounded-xl p-3 hover:border-sky-400 hover:shadow-md transition card-hover">
+         <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+         </div>
+         <div class="text-center">
+          <div class="font-semibold text-gray-800 text-xs">
+           Individual GTK
+          </div>
+         </div></a> <a href="https://info.gtk.kemendikdasmen.go.id" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 bg-white border border-gray-200 rounded-xl p-3 hover:border-sky-400 hover:shadow-md transition card-hover">
+         <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+         </div>
+         <div class="text-center">
+          <div class="font-semibold text-gray-800 text-xs">
+           Info GTK
+          </div>
+         </div></a> <a href="https://vervalpd.data.kemendikdasmen.go.id/index.php" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 bg-white border border-gray-200 rounded-xl p-3 hover:border-sky-400 hover:shadow-md transition card-hover">
+         <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+         </div>
+         <div class="text-center">
+          <div class="font-semibold text-gray-800 text-xs">
+           Verval PD
+          </div>
+         </div></a> <a href="https://vervalptk.data.kemdikbud.go.id" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 bg-white border border-gray-200 rounded-xl p-3 hover:border-sky-400 hover:shadow-md transition card-hover">
+         <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+         </div>
+         <div class="text-center">
+          <div class="font-semibold text-gray-800 text-xs">
+           Verval PTK
+          </div>
+         </div></a> <a href="https://arkas.kemendikdasmen.go.id" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 bg-white border border-gray-200 rounded-xl p-3 hover:border-sky-400 hover:shadow-md transition card-hover">
+         <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          </svg>
+         </div>
+         <div class="text-center">
+          <div class="font-semibold text-gray-800 text-xs">
+           ARKAS
+          </div>
+         </div></a> <a href="https://revit.kemendikdasmen.go.id" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 bg-white border border-gray-200 rounded-xl p-3 hover:border-sky-400 hover:shadow-md transition card-hover">
+         <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+         </div>
+         <div class="text-center">
+          <div class="font-semibold text-gray-800 text-xs">
+           Monitoring Revit
+          </div>
+         </div></a> <a href="https://tka.kemendikdasmen.go.id/tka-2026/" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 bg-white border border-gray-200 rounded-xl p-3 hover:border-sky-400 hover:shadow-md transition card-hover">
+         <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+         </div>
+         <div class="text-center">
+          <div class="font-semibold text-gray-800 text-xs">
+           TKA
+          </div>
+         </div></a> <a href="https://anbk.kemdikbud.go.id/" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 bg-white border border-gray-200 rounded-xl p-3 hover:border-sky-400 hover:shadow-md transition card-hover">
+         <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+          </svg>
+         </div>
+         <div class="text-center">
+          <div class="font-semibold text-gray-800 text-xs">
+           ANBK
+          </div>
+         </div></a> <a href="https://belajar.id" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 bg-white border border-gray-200 rounded-xl p-3 hover:border-sky-400 hover:shadow-md transition card-hover">
+         <div class="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+         </div>
+         <div class="text-center">
+          <div class="font-semibold text-gray-800 text-xs">
+           Belajar.id
+          </div>
+         </div></a>
+       </div><!-- Dynamic Links from Admin -->
+       <div id="admin-links" class="grid md:grid-cols-2 lg:grid-cols-3 gap-3 mt-3"></div>
+      </div><!-- Beranda Posts -->
+      <div id="beranda-posts" class="space-y-4"></div>
+     </div><!-- Other Menu Contents -->
+     <div id="content-informasi" class="content-section hidden fade-in">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2"><span class="w-1 h-8 bg-sky-500 rounded"></span> Informasi Terbaru</h2>
+      <div id="informasi-posts" class="space-y-4">
+       <div class="text-center py-12 text-gray-500">
+        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+       </div>
+      </div>
+     </div>
+     <div id="content-dapodik" class="content-section hidden fade-in">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2"><span class="w-1 h-8 bg-sky-500 rounded"></span> Dapodik</h2>
+      <div id="dapodik-posts" class="space-y-4">
+       <div class="text-center py-12 text-gray-500">
+        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+       </div>
+      </div>
+     </div>
+     <div id="content-tpg" class="content-section hidden fade-in">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2"><span class="w-1 h-8 bg-sky-500 rounded"></span> TPG (Tunjangan Profesi Guru)</h2>
+      <div id="tpg-posts" class="space-y-4">
+       <div class="text-center py-12 text-gray-500">
+        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+       </div>
+      </div>
+     </div>
+     <div id="content-juknis" class="content-section hidden fade-in">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2"><span class="w-1 h-8 bg-sky-500 rounded"></span> Juknis / Peraturan</h2>
+      <div id="juknis-posts" class="space-y-4">
+       <div class="text-center py-12 text-gray-500">
+        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+       </div>
+      </div>
+     </div>
+     <div id="content-tka" class="content-section hidden fade-in">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2"><span class="w-1 h-8 bg-sky-500 rounded"></span> TKA / ANBK</h2>
+      <div id="tka-posts" class="space-y-4">
+       <div class="text-center py-12 text-gray-500">
+        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+        </svg>
+       </div>
+      </div>
+     </div>
+     <div id="content-eijazah" class="content-section hidden fade-in">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2"><span class="w-1 h-8 bg-sky-500 rounded"></span> E-Ijazah / E-Rapor</h2>
+      <div id="eijazah-posts" class="space-y-4">
+       <div class="text-center py-12 text-gray-500">
+        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z" /> <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+        </svg>
+       </div>
+      </div>
+     </div><!-- Consultation Menu -->
+     <div id="content-konsultasi" class="content-section hidden fade-in">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2"><span class="w-1 h-8 bg-sky-500 rounded"></span> 💬 Konsultasi</h2><!-- Consultation Form -->
+      <div class="bg-white border-2 border-sky-100 rounded-2xl p-6 shadow-lg mb-8">
+       <div class="flex items-start gap-3 mb-4">
+        <div class="w-12 h-12 bg-sky-100 rounded-xl flex items-center justify-center flex-shrink-0">
+         <svg class="w-6 h-6 text-sky-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+         </svg>
+        </div>
+        <div class="flex-1">
+         <h3 class="text-lg font-bold text-gray-800 mb-1">Kirim Pertanyaan Anda</h3>
+         <p class="text-sm text-gray-600">Punya pertanyaan seputar TPG, Dapodik, atau informasi pendidikan lainnya? Kirimkan pertanyaan Anda dan admin akan menjawabnya.</p>
+        </div>
+       </div>
+       <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap *</label> <input type="text" id="consult-name" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none" placeholder="Masukkan nama Anda">
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Nomor HP/WhatsApp *</label> <input type="tel" id="consult-phone" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none" placeholder="Contoh: 08123456789">
+        </div>
+       </div>
+       <div class="mb-4"><label class="block text-sm font-medium text-gray-700 mb-2">Pertanyaan *</label> <textarea id="consult-question" rows="5" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none" placeholder="Tuliskan pertanyaan Anda secara detail di sini..."></textarea>
+       </div><button onclick="submitConsultation()" id="submit-consult-btn" class="btn-primary text-white px-8 py-3 rounded-xl font-semibold"> 📤 Kirim Konsultasi </button>
+       <p id="consult-message" class="text-sm mt-3 hidden"></p>
+      </div><!-- Privacy Notice -->
+      <div class="bg-gradient-to-r from-sky-50 to-blue-50 rounded-2xl p-6">
+       <div class="flex items-start gap-3">
+        <div class="w-12 h-12 bg-sky-100 rounded-xl flex items-center justify-center flex-shrink-0">
+         <svg class="w-6 h-6 text-sky-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+         </svg>
+        </div>
+        <div>
+         <h3 class="text-lg font-bold text-gray-800 mb-2">🔒 Privasi &amp; Keamanan</h3>
+         <p class="text-sm text-gray-700 leading-relaxed">Pertanyaan Anda telah dikirim dengan aman. Admin akan meninjau dan menjawab pertanyaan Anda secepatnya. Untuk melindungi privasi data pribadi Anda, riwayat konsultasi tidak ditampilkan di halaman publik.</p>
+         <div class="mt-3 bg-white rounded-lg p-3 text-xs text-gray-600">
+          <p class="font-semibold mb-1">✓ Data Anda aman dan terlindungi</p>
+          <p>✓ Admin akan menghubungi melalui nomor HP yang Anda berikan</p>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </main><!-- Footer -->
+   <footer class="gradient-bg text-white">
+    <div class="max-w-7xl mx-auto px-4 py-4"><!-- Stats Bar di Footer -->
+     <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+      <div class="bg-white/10 backdrop-blur rounded-lg p-2 text-center">
+       <div class="text-lg md:text-xl font-bold" id="daily-visits">
+        0
+       </div>
+       <div class="text-xs text-sky-100">
+        Kunjungan Hari Ini
+       </div>
+      </div>
+      <div class="bg-white/10 backdrop-blur rounded-lg p-2 text-center">
+       <div class="text-lg md:text-xl font-bold" id="total-views">
+        0
+       </div>
+       <div class="text-xs text-sky-100">
+        Total Dilihat
+       </div>
+      </div>
+      <div class="bg-white/10 backdrop-blur rounded-lg p-2 text-center">
+       <div class="text-lg md:text-xl font-bold" id="total-info">
+        0
+       </div>
+       <div class="text-xs text-sky-100">
+        Total Informasi
+       </div>
+      </div>
+      <div class="bg-white/10 backdrop-blur rounded-lg p-2 text-center">
+       <div class="text-lg md:text-xl font-bold" id="subscriber-count">
+        0
+       </div>
+       <div class="text-xs text-sky-100">
+        Subscriber
+       </div>
+      </div>
+     </div>
+     <div class="grid md:grid-cols-3 gap-4 mb-4">
+      <div>
+       <h3 class="font-bold text-base mb-2">📬 Berlangganan Informasi</h3>
+       <p class="text-sky-100 text-xs mb-2">Dapatkan update terbaru langsung ke email Anda.</p>
+       <div class="flex gap-2"><input type="email" id="subscribe-email" placeholder="Masukkan email Anda" class="flex-1 px-3 py-1.5 rounded-lg text-gray-800 text-xs input-field focus:outline-none"> <button onclick="subscribeEmail()" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg font-medium transition text-xs"> Langganan </button>
+       </div>
+       <p id="subscribe-message" class="text-xs mt-1 hidden"></p>
+      </div>
+      <div>
+       <h3 class="font-bold text-base mb-2">📞 Kontak</h3>
+       <p class="text-sky-100 text-xs mb-1">Konsultasi lebih lanjut:</p><a href="mailto:alem.maulana35@admin.smp.belajar.id" class="text-white hover:text-sky-200 text-xs flex items-center gap-2">
+        <svg class="w-3 h-3" fill="currentColor" viewbox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+        </svg> alem.maulana35@admin.smp.belajar.id </a>
+      </div>
+      <div>
+       <h3 class="font-bold text-base mb-2">ℹ️ Tentang Portal</h3>
+       <p class="text-sky-100 text-xs">Portal informasi resmi untuk guru dan tenaga pendidik. Menyediakan informasi terkini seputar TPG, Dapodik, dan peraturan pendidikan.</p>
+      </div>
+     </div>
+     <div class="border-t border-white/20 pt-3 text-center">
+      <p class="text-sky-100 text-xs">© 2026 Alem Maulana Wulida Finnahar. All Rights Reserved.</p>
+     </div>
+    </div>
+   </footer>
+  </div><!-- Login Modal -->
+  <div id="login-modal" class="fixed inset-0 z-50 hidden">
+   <div class="modal-overlay absolute inset-0" onclick="closeLoginModal()"></div>
+   <div class="absolute inset-0 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md relative fade-in">
+     <div class="gradient-bg rounded-t-2xl p-6 text-white">
+      <h2 class="text-xl font-bold">🔐 Login Admin - Keamanan Berlapis</h2>
+      <p class="text-sky-100 text-sm">Masukkan TOKEN dan Password untuk akses</p>
+     </div>
+     <div class="p-6">
+      <div class="bg-orange-50 border-l-4 border-orange-500 p-3 mb-4 rounded">
+       <div class="flex items-center gap-2">
+        <svg class="w-5 h-5 text-orange-600 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+        <p class="text-xs text-orange-800 font-medium">Keamanan 2 Lapis: TOKEN + Password</p>
+       </div>
+      </div>
+      <div class="mb-4"><label class="block text-sm font-medium text-gray-700 mb-2"> 🔑 Security TOKEN <span class="text-red-500">*</span> </label> <input type="text" id="admin-token" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none" placeholder="Masukkan TOKEN keamanan" autocomplete="off">
+       <p class="text-xs text-gray-500 mt-1">Token keamanan diperlukan untuk verifikasi identitas</p>
+      </div>
+      <div class="mb-4"><label class="block text-sm font-medium text-gray-700 mb-2"> 🔒 Password Admin <span class="text-red-500">*</span> </label> <input type="password" id="admin-password" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none" placeholder="Masukkan password admin" autocomplete="off">
+      </div>
+      <p id="login-error" class="text-red-500 text-sm mb-4 hidden flex items-center gap-2">
+       <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+       </svg><span id="login-error-text">TOKEN atau Password salah!</span></p><button onclick="loginAdmin()" class="w-full btn-primary text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
+       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+       </svg> Masuk dengan Verifikasi Keamanan </button>
+      <div class="mt-4 pt-4 border-t border-gray-200">
+       <div class="flex items-start gap-2 text-xs text-gray-600">
+        <svg class="w-4 h-4 text-sky-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div>
+         <p class="font-semibold text-gray-700 mb-1">Sistem Keamanan Berlapis</p>
+         <ul class="list-disc list-inside space-y-0.5">
+          <li>Lapisan 1: Verifikasi Security TOKEN</li>
+          <li>Lapisan 2: Autentikasi Password Admin</li>
+          <li>Lapisan 3: Enkripsi Sesi Login</li>
+         </ul>
+        </div>
+       </div>
+      </div>
+     </div><button onclick="closeLoginModal()" class="absolute top-4 right-4 text-white/80 hover:text-white">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg></button>
+    </div>
+   </div>
+  </div><!-- Admin Dashboard Modal -->
+  <div id="admin-modal" class="fixed inset-0 z-50 hidden">
+   <div class="modal-overlay absolute inset-0" onclick="closeAdminModal()"></div>
+   <div class="absolute inset-0 flex items-center justify-center p-4 overflow-auto">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-full overflow-auto relative fade-in my-4">
+     <div class="gradient-bg rounded-t-2xl p-6 text-white sticky top-0 z-10">
+      <div class="flex justify-between items-center">
+       <div>
+        <h2 class="text-xl font-bold">⚙️ Dashboard Admin</h2>
+        <p class="text-sky-100 text-sm">Kelola konten dan pengaturan portal</p>
+       </div><button onclick="logoutAdmin()" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium transition"> Logout </button>
+      </div>
+     </div>
+     <div class="p-6"><!-- Admin Tabs -->
+      <div class="flex flex-wrap gap-2 mb-6 border-b pb-4"><button onclick="showAdminTab('add-content')" class="admin-tab-btn px-4 py-2 rounded-lg font-medium text-sm bg-sky-500 text-white" data-tab="add-content"> ➕ Tambah Informasi </button> <button onclick="showAdminTab('manage-content')" class="admin-tab-btn px-4 py-2 rounded-lg font-medium text-sm bg-gray-100 text-gray-700 hover:bg-gray-200" data-tab="manage-content"> 📋 Kelola Informasi </button> <button onclick="showAdminTab('add-link')" class="admin-tab-btn px-4 py-2 rounded-lg font-medium text-sm bg-gray-100 text-gray-700 hover:bg-gray-200" data-tab="add-link"> 🔗 Tambah Link </button> <button onclick="showAdminTab('marquee')" class="admin-tab-btn px-4 py-2 rounded-lg font-medium text-sm bg-gray-100 text-gray-700 hover:bg-gray-200" data-tab="marquee"> 📜 Teks Berjalan </button> <button onclick="showAdminTab('consultations')" class="admin-tab-btn px-4 py-2 rounded-lg font-medium text-sm bg-gray-100 text-gray-700 hover:bg-gray-200" data-tab="consultations"> 💬 Konsultasi </button> <button onclick="showAdminTab('users')" class="admin-tab-btn px-4 py-2 rounded-lg font-medium text-sm bg-gray-100 text-gray-700 hover:bg-gray-200" data-tab="users"> 👥 Pengguna </button> <button onclick="showAdminTab('subscribers')" class="admin-tab-btn px-4 py-2 rounded-lg font-medium text-sm bg-gray-100 text-gray-700 hover:bg-gray-200" data-tab="subscribers"> 📧 Subscriber </button>
+      </div><!-- Add Content Tab -->
+      <div id="tab-add-content" class="admin-tab-content">
+       <h3 class="font-bold text-lg mb-4">Tambah Informasi Baru</h3>
+       <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Menu Tujuan *</label> <select id="add-menu" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none"> <option value="">Pilih Menu</option> <option value="beranda">🏠 Beranda</option> <option value="informasi">📰 Informasi Terbaru</option> <option value="dapodik">📊 Dapodik</option> <option value="tpg">💰 TPG</option> <option value="juknis">📋 Juknis/Peraturan</option> <option value="tka">📝 TKA/ANBK</option> <option value="eijazah">🎓 E-Ijazah/E-Rapor</option> </select>
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Judul *</label> <input type="text" id="add-title" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none" placeholder="Judul informasi">
+        </div>
+       </div>
+       <div class="mb-4"><label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi (Mendukung HTML) *</label> <textarea id="add-description" rows="6" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none" placeholder="Masukkan deskripsi atau kode HTML..."></textarea>
+        <p class="text-xs text-gray-500 mt-1">Tips: Anda bisa menggunakan tag HTML seperti &lt;b&gt;, &lt;i&gt;, &lt;a href=''&gt;, &lt;ul&gt;, &lt;li&gt;, dll.</p>
+       </div>
+       <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">URL Gambar (Opsional)</label> <input type="url" id="add-image" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none" placeholder="https://example.com/image.jpg">
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">URL File/Dokumen (Opsional)</label> <input type="url" id="add-file" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none" placeholder="https://example.com/document.pdf">
+        </div>
+       </div>
+       <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Link Tautan (Opsional)</label> <input type="url" id="add-link" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none" placeholder="https://example.com">
+        </div>
+        <div class="flex items-center gap-4 pt-8"><label class="flex items-center gap-2 cursor-pointer"> <input type="checkbox" id="add-new" class="w-5 h-5 rounded text-sky-500"> <span class="text-sm font-medium text-gray-700">Tandai sebagai BARU (berkedip)</span> </label>
+        </div>
+       </div><button onclick="addContent()" id="add-content-btn" class="btn-primary text-white px-6 py-3 rounded-xl font-semibold"> ➕ Tambah Informasi </button>
+      </div><!-- Manage Content Tab -->
+      <div id="tab-manage-content" class="admin-tab-content hidden">
+       <h3 class="font-bold text-lg mb-4">Kelola Informasi</h3>
+       <div id="manage-content-list" class="space-y-3 max-h-96 overflow-auto">
+        <p class="text-gray-500 text-center py-8">Belum ada informasi yang ditambahkan.</p>
+       </div>
+      </div><!-- Add Link Tab -->
+      <div id="tab-add-link" class="admin-tab-content hidden">
+       <h3 class="font-bold text-lg mb-4">Tambah Link Penting</h3><!-- Quick Google Services -->
+       <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mb-4">
+        <h4 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+         <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewbox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" /> <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" /> <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" /> <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+         </svg> Quick Add - Layanan Google</h4>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2"><button onclick="quickAddGoogleLink('drive')" class="flex items-center gap-2 bg-white hover:bg-blue-50 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 border border-gray-200 transition"> <span>📁</span> Drive </button> <button onclick="quickAddGoogleLink('docs')" class="flex items-center gap-2 bg-white hover:bg-blue-50 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 border border-gray-200 transition"> <span>📝</span> Docs </button> <button onclick="quickAddGoogleLink('sheets')" class="flex items-center gap-2 bg-white hover:bg-blue-50 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 border border-gray-200 transition"> <span>📊</span> Sheets </button> <button onclick="quickAddGoogleLink('slides')" class="flex items-center gap-2 bg-white hover:bg-blue-50 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 border border-gray-200 transition"> <span>📽️</span> Slides </button> <button onclick="quickAddGoogleLink('forms')" class="flex items-center gap-2 bg-white hover:bg-blue-50 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 border border-gray-200 transition"> <span>📋</span> Forms </button> <button onclick="quickAddGoogleLink('classroom')" class="flex items-center gap-2 bg-white hover:bg-blue-50 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 border border-gray-200 transition"> <span>🎓</span> Classroom </button> <button onclick="quickAddGoogleLink('meet')" class="flex items-center gap-2 bg-white hover:bg-blue-50 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 border border-gray-200 transition"> <span>📹</span> Meet </button> <button onclick="quickAddGoogleLink('calendar')" class="flex items-center gap-2 bg-white hover:bg-blue-50 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 border border-gray-200 transition"> <span>📅</span> Calendar </button>
+        </div>
+        <p class="text-xs text-gray-600 mt-3">💡 Klik tombol untuk otomatis mengisi nama dan URL layanan Google</p>
+       </div>
+       <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Nama Link *</label> <input type="text" id="link-name" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none" placeholder="Nama link">
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">URL Link *</label> <input type="url" id="link-url" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none" placeholder="https://example.com">
+        </div>
+       </div>
+       <div class="mb-4"><label class="block text-sm font-medium text-gray-700 mb-2">Tata Letak Grid</label>
+        <div class="grid grid-cols-2 gap-4">
+         <div><label class="block text-xs text-gray-600 mb-1">Kolom (Desktop)</label> <select id="link-cols" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none"> <option value="1">1 Kolom</option> <option value="2">2 Kolom</option> <option value="3">3 Kolom</option> <option value="4">4 Kolom</option> <option value="5">5 Kolom</option> <option value="6" selected>6 Kolom</option> </select>
+         </div>
+         <div><label class="block text-xs text-gray-600 mb-1">Jarak Antar Link</label> <select id="link-gap" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none"> <option value="2">Kecil</option> <option value="3" selected>Normal</option> <option value="4">Besar</option> </select>
+         </div>
+        </div>
+        <p class="text-xs text-gray-500 mt-2">💡 Atur berapa link yang ditampilkan horizontal dan vertikal</p>
+       </div><button onclick="addLink()" id="add-link-btn" class="btn-primary text-white px-6 py-3 rounded-xl font-semibold mb-6"> 🔗 Tambah Link </button> <button onclick="saveLinkLayout()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-semibold mb-6 ml-2 transition"> 💾 Simpan Tata Letak </button>
+       <h4 class="font-semibold text-gray-800 mb-3">Link yang Ditambahkan:</h4>
+       <div id="admin-links-list" class="space-y-2 max-h-64 overflow-auto">
+        <p class="text-gray-500 text-sm">Belum ada link tambahan.</p>
+       </div>
+      </div><!-- Marquee Tab -->
+      <div id="tab-marquee" class="admin-tab-content hidden">
+       <h3 class="font-bold text-lg mb-4">Teks Berjalan (Marquee)</h3>
+       <div class="mb-4"><label class="block text-sm font-medium text-gray-700 mb-2">Teks Marquee</label> <input type="text" id="marquee-text" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none" placeholder="Masukkan teks yang akan berjalan...">
+       </div>
+       <div class="mb-4"><label class="block text-sm font-medium text-gray-700 mb-2">Kecepatan: <span id="speed-label">Normal</span></label> <input type="range" id="marquee-speed" min="5" max="30" value="15" class="w-full" oninput="updateSpeedLabel()">
+        <div class="flex justify-between text-xs text-gray-500 mt-1"><span>Lambat</span> <span>Cepat</span>
+        </div>
+       </div>
+       <div class="flex gap-3"><button onclick="saveMarquee()" id="save-marquee-btn" class="btn-primary text-white px-6 py-3 rounded-xl font-semibold"> 💾 Simpan Marquee </button> <button onclick="clearMarquee()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-3 rounded-xl font-semibold transition"> 🗑️ Hapus Marquee </button>
+       </div>
+      </div><!-- Consultations Tab -->
+      <div id="tab-consultations" class="admin-tab-content hidden">
+       <h3 class="font-bold text-lg mb-4">💬 Pertanyaan Konsultasi</h3>
+       <div id="consultations-list" class="space-y-4 max-h-96 overflow-auto">
+        <p class="text-gray-500 text-center py-8">Belum ada pertanyaan konsultasi.</p>
+       </div>
+      </div><!-- Users Tab -->
+      <div id="tab-users" class="admin-tab-content hidden">
+       <h3 class="font-bold text-lg mb-4">Kelola Pengguna</h3>
+       <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Nama *</label> <input type="text" id="user-name" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none" placeholder="Nama pengguna">
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Jabatan *</label> <input type="text" id="user-position" class="w-full px-4 py-3 rounded-xl input-field focus:outline-none" placeholder="Jabatan">
+        </div>
+       </div><button onclick="addUser()" id="add-user-btn" class="btn-primary text-white px-6 py-3 rounded-xl font-semibold mb-6"> 👤 Tambah Pengguna </button>
+       <h4 class="font-semibold text-gray-800 mb-3">Daftar Pengguna:</h4>
+       <div id="users-list" class="space-y-2 max-h-64 overflow-auto">
+        <p class="text-gray-500 text-sm">Belum ada pengguna yang ditambahkan.</p>
+       </div>
+      </div><!-- Subscribers Tab -->
+      <div id="tab-subscribers" class="admin-tab-content hidden">
+       <h3 class="font-bold text-lg mb-4">Daftar Subscriber Email</h3>
+       <div id="subscribers-list" class="space-y-2 max-h-96 overflow-auto">
+        <p class="text-gray-500 text-sm">Belum ada subscriber.</p>
+       </div>
+      </div>
+     </div><button onclick="closeAdminModal()" class="absolute top-4 right-4 text-white/80 hover:text-white">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg></button>
+    </div>
+   </div>
+  </div><!-- Delete Confirmation Modal -->
+  <div id="delete-modal" class="fixed inset-0 z-50 hidden">
+   <div class="modal-overlay absolute inset-0" onclick="closeDeleteModal()"></div>
+   <div class="absolute inset-0 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm relative fade-in">
+     <div class="p-6 text-center">
+      <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+       <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+       </svg>
+      </div>
+      <h3 class="text-lg font-bold text-gray-800 mb-2">Konfirmasi Hapus</h3>
+      <p class="text-gray-600 text-sm mb-6" id="delete-message">Apakah Anda yakin ingin menghapus item ini?</p>
+      <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-xl font-semibold transition"> Batal </button> <button onclick="confirmDelete()" id="confirm-delete-btn" class="flex-1 btn-danger text-white py-2 rounded-xl font-semibold"> Hapus </button>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    // App State
+    let appData = [];
+    let currentMenu = 'beranda';
+    let isLoggedIn = false;
+    let deleteTarget = null;
+    let dailyVisits = parseInt(localStorage.getItem('dailyVisits') || '0');
+    let lastVisitDate = localStorage.getItem('lastVisitDate');
+    const today = new Date().toDateString();
+    
+    // Track daily visits
+    if (lastVisitDate !== today) {
+      dailyVisits = 1;
+      localStorage.setItem('lastVisitDate', today);
+    } else {
+      dailyVisits++;
+    }
+    localStorage.setItem('dailyVisits', dailyVisits.toString());
+
+    const ADMIN_PASSWORD = '@2387AMWf';
+    const ADMIN_TOKEN = 'HAHA45';
+
+    const defaultConfig = {
+      site_title: 'Portal GTK Terpadu'
+    };
+
+    // Data Handler for SDK
+    const dataHandler = {
+      onDataChanged(data) {
+        appData = data;
+        renderAllContent();
+        updateStats();
+      }
+    };
+
+    // Initialize SDKs
+    async function initApp() {
+      // Check existing session on load (Lapisan 3 - Session Management)
+      checkAdminSession();
+      
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => {
+            document.getElementById('site-title').textContent = config.site_title || defaultConfig.site_title;
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [],
+            borderables: [],
+            fontEditable: undefined,
+            fontSizeable: undefined
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['site_title', config.site_title || defaultConfig.site_title]
+          ])
+        });
+      }
+
+      if (window.dataSdk) {
+        const result = await window.dataSdk.init(dataHandler);
+        if (!result.isOk) {
+          console.error('Failed to init data SDK');
+        }
+      }
+
+      updateStats();
+    }
+
+    // Check and validate admin session
+    function checkAdminSession() {
+      const sessionData = sessionStorage.getItem('adminSession');
+      if (sessionData) {
+        try {
+          const session = JSON.parse(sessionData);
+          const now = new Date().getTime();
+          
+          // Check if session is valid and not expired
+          if (session.logged && session.expires && now < session.expires) {
+            isLoggedIn = true;
+          } else {
+            // Session expired, clear it
+            sessionStorage.removeItem('adminSession');
+            isLoggedIn = false;
+          }
+        } catch (e) {
+          // Invalid session data, clear it
+          sessionStorage.removeItem('adminSession');
+          isLoggedIn = false;
+        }
+      }
+    }
+
+    // Render Functions
+    function renderAllContent() {
+      renderMenuPosts('beranda');
+      renderMenuPosts('informasi');
+      renderMenuPosts('dapodik');
+      renderMenuPosts('tpg');
+      renderMenuPosts('juknis');
+      renderMenuPosts('tka');
+      renderMenuPosts('eijazah');
+      renderAdminLinks();
+      renderMarquee();
+      renderManageContent();
+      renderAdminLinksList();
+      renderUsersList();
+      renderSubscribersList();
+      renderConsultationsList();
+      applyLinkLayout();
+    }
+
+    function renderMenuPosts(menu) {
+      const container = document.getElementById(`${menu}-posts`);
+      if (!container) return;
+
+      const posts = appData.filter(item => item.type === 'post' && item.menu === menu);
+      
+      if (posts.length === 0) {
+        if (menu === 'beranda') {
+          container.innerHTML = '';
+        } else {
+          container.innerHTML = `
+            <div class="text-center py-12 text-gray-500">
+              <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+              </svg>
+              <p>Belum ada informasi. Silakan login sebagai admin untuk menambahkan.</p>
+            </div>
+          `;
+        }
+        return;
+      }
+
+      container.innerHTML = posts.map(post => `
+        <div class="info-card bg-white border border-gray-200 rounded-xl p-5 card-hover" onclick="incrementView('${post.__backendId}')">
+          <div class="flex items-start gap-4">
+            ${post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title}" loading="lazy" class="w-24 h-24 object-cover rounded-lg flex-shrink-0" onerror="this.style.display='none'">` : ''}
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-2">
+                <h4 class="font-semibold text-gray-800 text-base">${post.title}</h4>
+                ${post.isNew ? '<span class="blink-new bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">BARU</span>' : ''}
+              </div>
+              <div class="text-sm text-gray-600 mb-3 prose max-w-none">${post.description}</div>
+              <div class="flex flex-wrap items-center gap-3 text-xs text-gray-500">
+                <span>📅 ${new Date(post.createdAt).toLocaleDateString('id-ID')}</span>
+                <span>👁️ ${post.views || 0} dilihat</span>
+                ${post.link ? `<a href="${post.link}" target="_blank" rel="noopener noreferrer" class="text-sky-600 hover:text-sky-700 font-medium">🔗 Buka Link</a>` : ''}
+                ${post.fileUrl ? `<a href="${post.fileUrl}" target="_blank" rel="noopener noreferrer" class="text-green-600 hover:text-green-700 font-medium">📎 Download File</a>` : ''}
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderAdminLinks() {
+      const container = document.getElementById('admin-links');
+      if (!container) return;
+
+      const links = appData.filter(item => item.type === 'link');
+      
+      if (links.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      container.innerHTML = links.map(link => `
+        <a href="${link.linkUrl}" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 bg-white border border-gray-200 rounded-xl p-3 hover:border-sky-400 hover:shadow-md transition card-hover">
+          <div class="w-10 h-10 bg-sky-100 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+            </svg>
+          </div>
+          <div class="text-center">
+            <div class="font-semibold text-gray-800 text-xs">${link.linkName}</div>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    function renderMarquee() {
+      const marqueeItem = appData.find(item => item.type === 'marquee');
+      const banner = document.getElementById('marquee-banner');
+      const content = document.getElementById('marquee-content');
+
+      if (marqueeItem && marqueeItem.marqueeText) {
+        banner.classList.remove('hidden');
+        content.textContent = marqueeItem.marqueeText;
+        const speed = marqueeItem.marqueeSpeed || 15;
+        content.style.animationDuration = `${35 - speed}s`;
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+
+    function renderManageContent() {
+      const container = document.getElementById('manage-content-list');
+      if (!container) return;
+
+      const posts = appData.filter(item => item.type === 'post');
+      
+      if (posts.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-center py-8">Belum ada informasi yang ditambahkan.</p>';
+        return;
+      }
+
+      container.innerHTML = posts.map(post => `
+        <div class="flex items-center justify-between bg-gray-50 rounded-xl p-4">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="text-xs bg-sky-100 text-sky-700 px-2 py-1 rounded">${getMenuLabel(post.menu)}</span>
+              <span class="font-medium text-gray-800 truncate">${post.title}</span>
+              ${post.isNew ? '<span class="blink-new text-xs bg-red-500 text-white px-2 py-0.5 rounded">BARU</span>' : ''}
+            </div>
+            <div class="text-xs text-gray-500 mt-1">👁️ ${post.views || 0} dilihat</div>
+          </div>
+          <button onclick="deleteItem('${post.__backendId}', 'informasi')" class="text-red-500 hover:text-red-700 p-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function renderAdminLinksList() {
+      const container = document.getElementById('admin-links-list');
+      if (!container) return;
+
+      const links = appData.filter(item => item.type === 'link');
+      
+      if (links.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-sm">Belum ada link tambahan.</p>';
+        return;
+      }
+
+      container.innerHTML = links.map(link => `
+        <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+          <div class="flex-1 min-w-0">
+            <div class="font-medium text-gray-800 text-sm truncate">${link.linkName}</div>
+            <div class="text-xs text-gray-500 truncate">${link.linkUrl}</div>
+          </div>
+          <button onclick="deleteItem('${link.__backendId}', 'link')" class="text-red-500 hover:text-red-700 p-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function renderUsersList() {
+      const container = document.getElementById('users-list');
+      if (!container) return;
+
+      const users = appData.filter(item => item.type === 'user');
+      
+      if (users.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-sm">Belum ada pengguna yang ditambahkan.</p>';
+        return;
+      }
+
+      container.innerHTML = users.map(user => `
+        <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+          <div>
+            <div class="font-medium text-gray-800">${user.userName}</div>
+            <div class="text-xs text-gray-500">${user.userPosition}</div>
+          </div>
+          <button onclick="deleteItem('${user.__backendId}', 'pengguna')" class="text-red-500 hover:text-red-700 p-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function renderSubscribersList() {
+      const container = document.getElementById('subscribers-list');
+      if (!container) return;
+
+      const subscribers = appData.filter(item => item.type === 'subscriber');
+      
+      if (subscribers.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-sm">Belum ada subscriber.</p>';
+        return;
+      }
+
+      container.innerHTML = subscribers.map(sub => `
+        <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-sky-100 rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 text-sky-600" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+              </svg>
+            </div>
+            <span class="text-gray-800">${sub.email}</span>
+          </div>
+          <button onclick="deleteItem('${sub.__backendId}', 'subscriber')" class="text-red-500 hover:text-red-700 p-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function renderConsultationsList() {
+      const container = document.getElementById('consultations-list');
+      if (!container) return;
+
+      const consultations = appData.filter(item => item.type === 'consultation');
+      
+      if (consultations.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-center py-8">Belum ada pertanyaan konsultasi.</p>';
+        return;
+      }
+
+      container.innerHTML = consultations.map(consult => `
+        <div class="bg-gray-50 rounded-xl p-4 border-l-4 ${consult.consultStatus === 'answered' ? 'border-green-500' : 'border-orange-500'}">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-semibold text-gray-800">${consult.consultName}</span>
+                <span class="px-2 py-0.5 text-xs rounded-full ${consult.consultStatus === 'answered' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">
+                  ${consult.consultStatus === 'answered' ? '   Terjawab' : '⏳ Menunggu'}
+                </span>
+              </div>
+              <div class="text-xs text-gray-500 flex items-center gap-3">
+                <span>📱 ${consult.consultPhone}</span>
+                <span>📅 ${new Date(consult.createdAt).toLocaleDateString('id-ID')}</span>
+              </div>
+            </div>
+            <button onclick="deleteItem('${consult.__backendId}', 'konsultasi')" class="text-red-500 hover:text-red-700 p-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
+            </button>
+          </div>
+          <div class="mb-3">
+            <div class="text-xs font-semibold text-gray-700 mb-1">Pertanyaan:</div>
+            <div class="text-sm text-gray-800 bg-white p-3 rounded-lg">${consult.consultQuestion}</div>
+          </div>
+          ${consult.consultAnswer ? `
+            <div class="mb-3">
+              <div class="text-xs font-semibold text-gray-700 mb-1">Jawaban:</div>
+              <div class="text-sm text-gray-800 bg-green-50 p-3 rounded-lg">${consult.consultAnswer}</div>
+            </div>
+          ` : ''}
+          ${!consult.consultAnswer ? `
+            <div>
+              <textarea id="answer-${consult.__backendId}" class="w-full px-3 py-2 rounded-lg input-field focus:outline-none text-sm mb-2" rows="3" placeholder="Tulis jawaban Anda..."></textarea>
+              <button onclick="answerConsultation('${consult.__backendId}')" class="btn-primary text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                📤 Kirim Jawaban
+              </button>
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+
+
+    // Stats
+    function updateStats() {
+      document.getElementById('daily-visits').textContent = dailyVisits;
+      
+      const posts = appData.filter(item => item.type === 'post');
+      const totalViews = posts.reduce((sum, post) => sum + (post.views || 0), 0);
+      document.getElementById('total-views').textContent = totalViews;
+      document.getElementById('total-info').textContent = posts.length;
+      
+      const subscribers = appData.filter(item => item.type === 'subscriber');
+      document.getElementById('subscriber-count').textContent = subscribers.length;
+    }
+
+    // Helper Functions
+    function getMenuLabel(menu) {
+      const labels = {
+        beranda: '🏠 Beranda',
+        informasi: '📰 Informasi',
+        dapodik: '📊 Dapodik',
+        tpg: '💰 TPG',
+        juknis: '📋 Juknis',
+        tka: '📝 TKA/ANBK',
+        eijazah: '🎓 E-Ijazah'
+      };
+      return labels[menu] || menu;
+    }
+
+    // Quick add Google links
+    function quickAddGoogleLink(service) {
+      const googleServices = {
+        drive: {
+          name: 'Google Drive',
+          url: 'https://drive.google.com'
+        },
+        docs: {
+          name: 'Google Docs',
+          url: 'https://docs.google.com'
+        },
+        sheets: {
+          name: 'Google Sheets',
+          url: 'https://sheets.google.com'
+        },
+        slides: {
+          name: 'Google Slides',
+          url: 'https://slides.google.com'
+        },
+        forms: {
+          name: 'Google Forms',
+          url: 'https://forms.google.com'
+        },
+        classroom: {
+          name: 'Google Classroom',
+          url: 'https://classroom.google.com'
+        },
+        meet: {
+          name: 'Google Meet',
+          url: 'https://meet.google.com'
+        },
+        calendar: {
+          name: 'Google Calendar',
+          url: 'https://calendar.google.com'
+        }
+      };
+
+      const selectedService = googleServices[service];
+      if (selectedService) {
+        document.getElementById('link-name').value = selectedService.name;
+        document.getElementById('link-url').value = selectedService.url;
+        showToast(`${selectedService.name} siap ditambahkan!`, 'success');
+      }
+    }
+
+    // Submit Consultation
+    async function submitConsultation() {
+      if (!window.dataSdk) return;
+
+      const name = document.getElementById('consult-name').value.trim();
+      const phone = document.getElementById('consult-phone').value.trim();
+      const question = document.getElementById('consult-question').value.trim();
+      const message = document.getElementById('consult-message');
+
+      if (!name || !phone || !question) {
+        message.textContent = '❌ Mohon isi semua field!';
+        message.className = 'text-sm mt-3 text-red-600';
+        message.classList.remove('hidden');
+        return;
+      }
+
+      if (appData.length >= 999) {
+        message.textContent = '❌ Batas maksimal data tercapai!';
+        message.className = 'text-sm mt-3 text-red-600';
+        message.classList.remove('hidden');
+        return;
+      }
+
+      const btn = document.getElementById('submit-consult-btn');
+      btn.disabled = true;
+      btn.textContent = 'Mengirim...';
+
+      const result = await window.dataSdk.create({
+        type: 'consultation',
+        consultName: name,
+        consultPhone: phone,
+        consultQuestion: question,
+        consultAnswer: '',
+        consultStatus: 'pending',
+        createdAt: new Date().toISOString()
+      });
+
+      btn.disabled = false;
+      btn.textContent = '📤 Kirim Konsultasi';
+
+      if (result.isOk) {
+        document.getElementById('consult-name').value = '';
+        document.getElementById('consult-phone').value = '';
+        document.getElementById('consult-question').value = '';
+        message.textContent = '✅ Konsultasi berhasil dikirim! Tunggu admin menjawab pertanyaan Anda.';
+        message.className = 'text-sm mt-3 text-green-600';
+      } else {
+        message.textContent = '❌ Gagal mengirim konsultasi!';
+        message.className = 'text-sm mt-3 text-red-600';
+      }
+      message.classList.remove('hidden');
+      setTimeout(() => message.classList.add('hidden'), 5000);
+    }
+
+    // Answer Consultation
+    async function answerConsultation(id) {
+      if (!window.dataSdk) return;
+
+      const answer = document.getElementById(`answer-${id}`).value.trim();
+      if (!answer) {
+        showToast('Mohon isi jawaban!', 'error');
+        return;
+      }
+
+      const consultation = appData.find(item => item.__backendId === id);
+      if (!consultation) return;
+
+      const result = await window.dataSdk.update({
+        ...consultation,
+        consultAnswer: answer,
+        consultStatus: 'answered'
+      });
+
+      if (result.isOk) {
+        showToast('Jawaban berhasil dikirim!', 'success');
+      } else {
+        showToast('Gagal mengirim jawaban!', 'error');
+      }
+    }
+
+    // Navigation
+    function showMenu(menu) {
+      currentMenu = menu;
+      document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`content-${menu}`).classList.remove('hidden');
+      
+      document.querySelectorAll('.menu-btn').forEach(btn => {
+        btn.classList.remove('menu-active');
+        btn.classList.add('hover:bg-sky-100');
+      });
+      document.querySelector(`[data-menu="${menu}"]`).classList.add('menu-active');
+      document.querySelector(`[data-menu="${menu}"]`).classList.remove('hover:bg-sky-100');
+    }
+
+    function showAdminTab(tab) {
+      document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`tab-${tab}`).classList.remove('hidden');
+      
+      document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+        btn.classList.remove('bg-sky-500', 'text-white');
+        btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+      });
+      document.querySelector(`[data-tab="${tab}"]`).classList.add('bg-sky-500', 'text-white');
+      document.querySelector(`[data-tab="${tab}"]`).classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+    }
+
+    // Modals
+    function openLoginModal() {
+      if (isLoggedIn) {
+        openAdminModal();
+        return;
+      }
+      document.getElementById('login-modal').classList.remove('hidden');
+      document.getElementById('admin-token').value = '';
+      document.getElementById('admin-password').value = '';
+      document.getElementById('login-error').classList.add('hidden');
+    }
+
+    function closeLoginModal() {
+      document.getElementById('login-modal').classList.add('hidden');
+    }
+
+    function openAdminModal() {
+      document.getElementById('admin-modal').classList.remove('hidden');
+      renderManageContent();
+      renderAdminLinksList();
+      renderUsersList();
+      renderSubscribersList();
+      renderConsultationsList();
+      
+      // Load marquee settings
+      const marqueeItem = appData.find(item => item.type === 'marquee');
+      if (marqueeItem) {
+        document.getElementById('marquee-text').value = marqueeItem.marqueeText || '';
+        document.getElementById('marquee-speed').value = marqueeItem.marqueeSpeed || 15;
+        updateSpeedLabel();
+      }
+    }
+
+    function closeAdminModal() {
+      document.getElementById('admin-modal').classList.add('hidden');
+    }
+
+    function loginAdmin() {
+      const token = document.getElementById('admin-token').value.trim();
+      const password = document.getElementById('admin-password').value;
+      const errorElement = document.getElementById('login-error');
+      const errorText = document.getElementById('login-error-text');
+      
+      // Validasi input kosong
+      if (!token || !password) {
+        errorText.textContent = 'TOKEN dan Password harus diisi!';
+        errorElement.classList.remove('hidden');
+        return;
+      }
+      
+      // Verifikasi TOKEN (Lapisan 1)
+      if (token !== ADMIN_TOKEN) {
+        errorText.textContent = '❌ TOKEN keamanan tidak valid!';
+        errorElement.classList.remove('hidden');
+        // Clear token field for security
+        document.getElementById('admin-token').value = '';
+        return;
+      }
+      
+      // Verifikasi Password (Lapisan 2)
+      if (password !== ADMIN_PASSWORD) {
+        errorText.textContent = '❌ Password admin salah!';
+        errorElement.classList.remove('hidden');
+        // Clear password field for security
+        document.getElementById('admin-password').value = '';
+        return;
+      }
+      
+      // Kedua verifikasi berhasil (Lapisan 3 - Enkripsi Sesi)
+      isLoggedIn = true;
+      
+      // Store encrypted session with timestamp
+      const sessionData = {
+        logged: true,
+        timestamp: new Date().getTime(),
+        expires: new Date().getTime() + (3600000 * 2) // 2 hours
+      };
+      sessionStorage.setItem('adminSession', JSON.stringify(sessionData));
+      
+      closeLoginModal();
+      openAdminModal();
+      showToast('✅ Login berhasil! Akses admin diberikan.', 'success');
+    }
+
+    function logoutAdmin() {
+      isLoggedIn = false;
+      sessionStorage.removeItem('adminSession');
+      closeAdminModal();
+      showToast('👋 Anda telah logout dari sistem admin.', 'success');
+    }
+
+    // Delete functionality
+    function deleteItem(id, type) {
+      deleteTarget = appData.find(item => item.__backendId === id);
+      document.getElementById('delete-message').textContent = `Apakah Anda yakin ingin menghapus ${type} ini?`;
+      document.getElementById('delete-modal').classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('delete-modal').classList.add('hidden');
+      deleteTarget = null;
+    }
+
+    async function confirmDelete() {
+      if (!deleteTarget || !window.dataSdk) return;
+      
+      const btn = document.getElementById('confirm-delete-btn');
+      btn.disabled = true;
+      btn.textContent = 'Menghapus...';
+
+      const result = await window.dataSdk.delete(deleteTarget);
+      
+      btn.disabled = false;
+      btn.textContent = 'Hapus';
+      
+      if (result.isOk) {
+        closeDeleteModal();
+      }
+    }
+
+    // Add Content
+    async function addContent() {
+      if (!window.dataSdk) return;
+
+      const menu = document.getElementById('add-menu').value;
+      const title = document.getElementById('add-title').value.trim();
+      const description = document.getElementById('add-description').value.trim();
+      const imageUrl = document.getElementById('add-image').value.trim();
+      const fileUrl = document.getElementById('add-file').value.trim();
+      const link = document.getElementById('add-link').value.trim();
+      const isNew = document.getElementById('add-new').checked;
+
+      if (!menu || !title || !description) {
+        showToast('Mohon isi menu, judul, dan deskripsi!', 'error');
+        return;
+      }
+
+      if (appData.length >= 999) {
+        showToast('Batas maksimal 999 data tercapai!', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('add-content-btn');
+      btn.disabled = true;
+      btn.textContent = 'Menambahkan...';
+
+      const result = await window.dataSdk.create({
+        type: 'post',
+        menu,
+        title,
+        description,
+        imageUrl,
+        fileUrl,
+        link,
+        isNew,
+        views: 0,
+        createdAt: new Date().toISOString()
+      });
+
+      btn.disabled = false;
+      btn.textContent = '➕ Tambah Informasi';
+
+      if (result.isOk) {
+        // Clear form
+        document.getElementById('add-menu').value = '';
+        document.getElementById('add-title').value = '';
+        document.getElementById('add-description').value = '';
+        document.getElementById('add-image').value = '';
+        document.getElementById('add-file').value = '';
+        document.getElementById('add-link').value = '';
+        document.getElementById('add-new').checked = false;
+        showToast('Informasi berhasil ditambahkan!', 'success');
+      } else {
+        showToast('Gagal menambahkan informasi!', 'error');
+      }
+    }
+
+    async function addLink() {
+      if (!window.dataSdk) return;
+
+      const linkName = document.getElementById('link-name').value.trim();
+      const linkUrl = document.getElementById('link-url').value.trim();
+
+      if (!linkName || !linkUrl) {
+        showToast('Mohon isi nama dan URL link!', 'error');
+        return;
+      }
+
+      if (appData.length >= 999) {
+        showToast('Batas maksimal 999 data tercapai!', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('add-link-btn');
+      btn.disabled = true;
+      btn.textContent = 'Menambahkan...';
+
+      const result = await window.dataSdk.create({
+        type: 'link',
+        linkName,
+        linkUrl,
+        createdAt: new Date().toISOString()
+      });
+
+      btn.disabled = false;
+      btn.textContent = '🔗 Tambah Link';
+
+      if (result.isOk) {
+        document.getElementById('link-name').value = '';
+        document.getElementById('link-url').value = '';
+        showToast('Link berhasil ditambahkan!', 'success');
+      } else {
+        showToast('Gagal menambahkan link!', 'error');
+      }
+    }
+
+    // Save link layout settings
+    async function saveLinkLayout() {
+      if (!window.dataSdk) return;
+      
+      const cols = document.getElementById('link-cols').value;
+      const gap = document.getElementById('link-gap').value;
+      
+      const existingLayout = appData.find(item => item.type === 'linkLayout');
+      
+      let result;
+      if (existingLayout) {
+        result = await window.dataSdk.update({
+          ...existingLayout,
+          linkCols: cols,
+          linkGap: gap
+        });
+      } else {
+        if (appData.length >= 999) {
+          showToast('Batas maksimal 999 data tercapai!', 'error');
+          return;
+        }
+        result = await window.dataSdk.create({
+          type: 'linkLayout',
+          linkCols: cols,
+          linkGap: gap,
+          createdAt: new Date().toISOString()
+        });
+      }
+      
+      if (result.isOk) {
+        showToast('Tata letak berhasil disimpan!', 'success');
+      }
+    }
+
+    // Apply link layout
+    function applyLinkLayout() {
+      const layoutData = appData.find(item => item.type === 'linkLayout');
+      const adminLinksContainer = document.getElementById('admin-links');
+      
+      if (adminLinksContainer) {
+        const cols = layoutData?.linkCols || '6';
+        const gap = layoutData?.linkGap || '3';
+        
+        const colsClass = {
+          '1': 'md:grid-cols-1',
+          '2': 'md:grid-cols-2',
+          '3': 'md:grid-cols-3',
+          '4': 'md:grid-cols-4',
+          '5': 'md:grid-cols-5',
+          '6': 'md:grid-cols-6'
+        }[cols] || 'md:grid-cols-3';
+        
+        const gapClass = {
+          '2': 'gap-2',
+          '3': 'gap-3',
+          '4': 'gap-4'
+        }[gap] || 'gap-3';
+        
+        adminLinksContainer.className = `grid lg:${colsClass} md:grid-cols-2 ${gapClass} mt-3`;
+      }
+      
+      // Update dropdown values
+      if (layoutData) {
+        const colsDropdown = document.getElementById('link-cols');
+        const gapDropdown = document.getElementById('link-gap');
+        if (colsDropdown) colsDropdown.value = layoutData.linkCols || '6';
+        if (gapDropdown) gapDropdown.value = layoutData.linkGap || '3';
+      }
+    }
+
+    // Marquee
+    function updateSpeedLabel() {
+      const speed = document.getElementById('marquee-speed').value;
+      const labels = { 5: 'Sangat Lambat', 10: 'Lambat', 15: 'Normal', 20: 'Cepat', 25: 'Sangat Cepat', 30: 'Super Cepat' };
+      let label = 'Normal';
+      if (speed <= 8) label = 'Sangat Lambat';
+      else if (speed <= 12) label = 'Lambat';
+      else if (speed <= 18) label = 'Normal';
+      else if (speed <= 24) label = 'Cepat';
+      else label = 'Sangat Cepat';
+      document.getElementById('speed-label').textContent = label;
+    }
+
+    async function saveMarquee() {
+      if (!window.dataSdk) return;
+
+      const text = document.getElementById('marquee-text').value.trim();
+      const speed = parseInt(document.getElementById('marquee-speed').value);
+
+      const btn = document.getElementById('save-marquee-btn');
+      btn.disabled = true;
+      btn.textContent = 'Menyimpan...';
+
+      const existingMarquee = appData.find(item => item.type === 'marquee');
+      
+      let result;
+      if (existingMarquee) {
+        result = await window.dataSdk.update({
+          ...existingMarquee,
+          marqueeText: text,
+          marqueeSpeed: speed
+        });
+      } else {
+        if (appData.length >= 999) {
+          showToast('Batas maksimal 999 data tercapai!', 'error');
+          btn.disabled = false;
+          btn.textContent = '💾 Simpan Marquee';
+          return;
+        }
+        result = await window.dataSdk.create({
+          type: 'marquee',
+          marqueeText: text,
+          marqueeSpeed: speed,
+          createdAt: new Date().toISOString()
+        });
+      }
+
+      btn.disabled = false;
+      btn.textContent = '💾 Simpan Marquee';
+
+      if (result.isOk) {
+        showToast('Marquee berhasil disimpan!', 'success');
+      } else {
+        showToast('Gagal menyimpan marquee!', 'error');
+      }
+    }
+
+    async function clearMarquee() {
+      if (!window.dataSdk) return;
+
+      const existingMarquee = appData.find(item => item.type === 'marquee');
+      if (existingMarquee) {
+        await window.dataSdk.delete(existingMarquee);
+        document.getElementById('marquee-text').value = '';
+        showToast('Marquee berhasil dihapus!', 'success');
+      }
+    }
+
+    // Add User
+    async function addUser() {
+      if (!window.dataSdk) return;
+
+      const userName = document.getElementById('user-name').value.trim();
+      const userPosition = document.getElementById('user-position').value.trim();
+
+      if (!userName || !userPosition) {
+        showToast('Mohon isi nama dan jabatan!', 'error');
+        return;
+      }
+
+      if (appData.length >= 999) {
+        showToast('Batas maksimal 999 data tercapai!', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('add-user-btn');
+      btn.disabled = true;
+      btn.textContent = 'Menambahkan...';
+
+      const result = await window.dataSdk.create({
+        type: 'user',
+        userName,
+        userPosition,
+        createdAt: new Date().toISOString()
+      });
+
+      btn.disabled = false;
+      btn.textContent = '👤 Tambah Pengguna';
+
+      if (result.isOk) {
+        document.getElementById('user-name').value = '';
+        document.getElementById('user-position').value = '';
+        showToast('Pengguna berhasil ditambahkan!', 'success');
+      } else {
+        showToast('Gagal menambahkan pengguna!', 'error');
+      }
+    }
+
+    // Subscribe
+    async function subscribeEmail() {
+      if (!window.dataSdk) return;
+
+      const email = document.getElementById('subscribe-email').value.trim();
+      const message = document.getElementById('subscribe-message');
+
+      if (!email || !email.includes('@')) {
+        message.textContent = '❌ Mohon masukkan email yang valid!';
+        message.className = 'text-xs mt-2 text-red-300';
+        message.classList.remove('hidden');
+        return;
+      }
+
+      // Check if already subscribed
+      const existing = appData.find(item => item.type === 'subscriber' && item.email === email);
+      if (existing) {
+        message.textContent = '⚠️ Email sudah terdaftar!';
+        message.className = 'text-xs mt-2 text-yellow-300';
+        message.classList.remove('hidden');
+        return;
+      }
+
+      if (appData.length >= 999) {
+        message.textContent = '❌ Batas maksimal tercapai!';
+        message.className = 'text-xs mt-2 text-red-300';
+        message.classList.remove('hidden');
+        return;
+      }
+
+      const result = await window.dataSdk.create({
+        type: 'subscriber',
+        email,
+        createdAt: new Date().toISOString()
+      });
+
+      if (result.isOk) {
+        message.textContent = '✅ Berhasil berlangganan!';
+        message.className = 'text-xs mt-2 text-green-300';
+        document.getElementById('subscribe-email').value = '';
+      } else {
+        message.textContent = '❌ Gagal berlangganan!';
+        message.className = 'text-xs mt-2 text-red-300';
+      }
+      message.classList.remove('hidden');
+      setTimeout(() => message.classList.add('hidden'), 3000);
+    }
+
+    // Increment view
+    async function incrementView(id) {
+      if (!window.dataSdk) return;
+      
+      const post = appData.find(item => item.__backendId === id);
+      if (post) {
+        await window.dataSdk.update({
+          ...post,
+          views: (post.views || 0) + 1
+        });
+      }
+    }
+
+    // Toast notification
+    function showToast(message, type) {
+      const toast = document.createElement('div');
+      toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-xl shadow-lg z-50 fade-in ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white font-medium`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Fullscreen
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // Initialize
+    initApp();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bfdd13876a47a21',t:'MTc2ODczNjQyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
